@@ -40,8 +40,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .gate { min-height: 80vh; align-content: center; text-align: center; justify-items: center; }
 .gate p { max-width: 22em; }
 .err { color: var(--r); font-size: calc(14px + var(--up)); }
-.top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: -4px; }
-.top .icon { border: 0; background: none; padding: 8px; margin: -8px -8px -8px 0; color: var(--muted); display: inline-flex; border-radius: 10px; }
+.icon { border: 0; background: none; padding: 8px; margin-right: -8px; color: var(--muted); display: inline-flex; border-radius: 10px; flex: none; }  /* шестерёнка — в строке поиска (Slovar.mount, aside) */
 .foot { display: grid; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; font-size: calc(14px + var(--up)); }
 .foot .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
@@ -66,10 +65,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 </main>
 
 <main id="app" class="hidden">
-  <div class="top">
-    <div class="brand"><b>Словарь</b></div>
-    <button class="icon" id="setOpen" aria-label="Настройки" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
-  </div>
+  <button class="icon" id="setOpen" aria-label="Настройки" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
   <section class="foot hidden" id="settings">
     <div class="row"><span>Тема</span><div class="seg" id="setTheme"><button data-t="auto">авто</button><button data-t="light">светлая</button><button data-t="dark">тёмная</button></div></div>
     <div class="row"><span>Шрифт</span><div class="seg" id="setBig"><button data-up="0">обычный</button><button data-up="1">+1</button><button data-up="2">+2</button><button data-up="3">+3</button><button data-up="4">+4</button><button data-up="5">+5</button></div></div>

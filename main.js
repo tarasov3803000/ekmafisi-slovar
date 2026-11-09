@@ -5,6 +5,7 @@
   $('app').classList.remove('hidden');
   const fromHash = () => decodeURIComponent(location.hash.slice(1)) || null;
   const api = Slovar.mount($('slv'), {
+    aside: $('setOpen'),
     onPick(l) { history.pushState({ d: ((history.state && history.state.d) || 0) + 1 }, '', '#' + encodeURIComponent(l)); api.show(l); },
     onBack() {
       if (history.state && history.state.d) history.back();
