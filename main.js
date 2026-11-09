@@ -3,18 +3,19 @@
 (() => {
   const $ = id => document.getElementById(id);
   $('app').classList.remove('hidden');
-  const fromHash = () => decodeURIComponent(location.hash.slice(1)) || null;
+  /* #<лемма> — статья, #<лемма>/tab — её таблицы спряжения или склонения */
+  const fromHash = () => { const h = decodeURIComponent(location.hash.slice(1)); if (!h) return [null, null]; const m = h.endsWith('/tab'); return [m ? h.slice(0, -4) : h, m ? 'tab' : null]; };
   const api = Slovar.mount($('slv'), {
     aside: $('setOpen'),
-    onPick(l) { history.pushState({ d: ((history.state && history.state.d) || 0) + 1 }, '', '#' + encodeURIComponent(l)); api.show(l); },
+    onPick(l, m) { history.pushState({ d: ((history.state && history.state.d) || 0) + 1 }, '', '#' + encodeURIComponent(l) + (m ? '/' + m : '')); api.show(l, m); },
     onBack() {
       if (history.state && history.state.d) history.back();
       else { history.replaceState(null, '', location.pathname + location.search); api.show(null); }  /* открыто ссылкой прямо на статью */
     }
   });
-  addEventListener('popstate', () => api.show(fromHash()));
-  api.show(fromHash());
-  api.ready.then(() => { if (!fromHash()) api.focus(); });
+  addEventListener('popstate', () => api.show(...fromHash()));
+  api.show(...fromHash());
+  api.ready.then(() => { if (!fromHash()[0]) api.focus(); });
 
   /* настройки: тема (своя), шрифт (общий с Экмафиси), выход */
   $('setOpen').onclick = () => { const on = $('settings').classList.toggle('hidden'); $('setOpen').setAttribute('aria-expanded', String(!on)); paint(); };
