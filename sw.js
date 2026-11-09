@@ -1,6 +1,6 @@
 /* «Словарь» — service worker. Оболочка (страница, код, значки, шрифты) — в кэш при установке, отдаётся из кэша.
    Статьи и звук сюда не попадают: их кладёт в свой кэш slovar.js после входа (общий с Экмафиси — один адрес github.io). */
-const VERSION = 'b28d627775';  /* tools/app.py slovar-site ставит сюда отпечаток файлов оболочки */
+const VERSION = '4d0c14925b';  /* tools/app.py slovar-site ставит сюда отпечаток файлов оболочки */
 const SHELL = 'slovar-shell-' + VERSION;  /* не «ekmafisi-shell-»: тот кэш чистит service worker Экмафиси */
 const FILES = ['./', 'index.html', 'tokeny.css', 'main.js', 'sync.js', 'slovar.js', 'config.js', 'vendor/supabase.js', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png'];
