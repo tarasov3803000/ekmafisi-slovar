@@ -86,13 +86,20 @@ Object.assign(window.EKM_CONFIG, { app: 'slovar', main: 'main.js', devContent: '
 <script src="slovar.js"></script>
 <script src="sync.js"></script>
 <script>
-/* обновление по воздуху: новая оболочка встаёт — страница перезапускается сама (в словаре нечего терять) */
+/* обновление по воздуху: новая оболочка проверяется уходя, возвращаясь и раз в полчаса; встала — страница перезапускается,
+   пока приложение свёрнуто, а нет — при следующем возврате: не посреди поиска (решение 18.11.2026) */
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').then(reg => {
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update().catch(() => {}); });
+    const upd = () => reg.update().catch(() => {});
+    document.addEventListener('visibilitychange', upd);
+    setInterval(upd, 30 * 60e3);
   });
-  let had = !!navigator.serviceWorker.controller;
-  navigator.serviceWorker.addEventListener('controllerchange', () => { if (!had) { had = true; return; } location.reload(); });
+  let had = !!navigator.serviceWorker.controller, nova = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!had) { had = true; return; }  /* первая установка — не обновление */
+    nova = true; if (document.visibilityState === 'hidden') location.reload();
+  });
+  document.addEventListener('visibilitychange', () => { if (nova) location.reload(); });
 }
 </script>
 </body>
