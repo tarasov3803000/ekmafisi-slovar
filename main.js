@@ -26,6 +26,11 @@
     document.querySelectorAll('#setTheme button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t === t)));
     document.querySelectorAll('#setBig button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.up === up)));
     $('who').textContent = EK.email || '';
+    const sk = +(get('slovar-skorost') || 0.9);  /* скорость голоса — читает slovar.js при каждом нажатии 🔊; по умолчанию 0,9 */
+    document.querySelectorAll('#setSkor button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.s === sk)));
+    /* замер открытия (Slovar.zamer, мс от начала страницы): сколько ждали поиска и статей — на этом телефоне */
+    const z = Slovar.zamer, sek = ms => (ms / 1000).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    $('zamer').textContent = z.ready ? `Открытие словаря: поиск — ${sek(z.ready)} с${z.s ? `, статьи — ${sek(z.s)} с` : ''} (из них версия — ${sek(z.ptr)}, указатель — ${sek(z.i - z.ptr)})` : '';
   }
   document.querySelectorAll('#setTheme button').forEach(b => b.onclick = () => {
     set('slovar-theme', b.dataset.t);
@@ -35,5 +40,6 @@
   document.querySelectorAll('#setBig button').forEach(b => b.onclick = () => {
     set('ekmafisi-up', b.dataset.up); document.documentElement.style.setProperty('--up', b.dataset.up + 'px'); paint();
   });
+  document.querySelectorAll('#setSkor button').forEach(b => b.onclick = () => { set('slovar-skorost', b.dataset.s); paint(); });
   $('signOut').onclick = () => EK.signOut();
 })();
