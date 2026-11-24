@@ -17,7 +17,7 @@
   api.show(...fromHash());
   api.ready.then(() => { if (!fromHash()[0]) api.focus(); });
 
-  /* настройки: тема (своя), скорость голоса и шрифт (общие с Экмафиси), выход. Замер открытия — Slovar.zamer, в консоли */
+  /* настройки: почта (выход), тема (своя), скорость голоса и шрифт (общие с Экмафиси). Замер открытия — Slovar.zamer, в консоли */
   $('setOpen').onclick = () => { const on = $('settings').classList.toggle('hidden'); $('setOpen').setAttribute('aria-expanded', String(!on)); paint(); };
   const get = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
   const set = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
@@ -34,9 +34,9 @@
     const t = tema(), up = +(get('ekmafisi-up') || 0), sk = skor();
     $('setTheme').innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${TICON[t]}</svg>`;
     $('setTheme').setAttribute('aria-label', 'Тема: ' + TNAME[t] + '. Сменить');
-    $('setSkor').value = sk; $('skorV').textContent = sk.toLocaleString('ru-RU', { minimumFractionDigits: 1 });
-    $('setBig').value = up; $('bigV').textContent = up ? '+' + up : 'обычный';
-    $('who').textContent = EK.email || '';
+    $('setSkor').value = sk; $('skorV').textContent = 'Скорость голоса: ' + sk.toLocaleString('ru-RU', { minimumFractionDigits: 1 });
+    $('setBig').value = up; $('bigV').textContent = 'Шрифт: ' + (up ? '+' + up : 'обычный');
+    $('who').textContent = EK.email || 'Войти с Google'; $('who').classList.toggle('vhod', !EK.email);
   }
   $('setTheme').onclick = () => {
     const t = TEMY[(TEMY.indexOf(tema()) + 1) % TEMY.length];
@@ -46,5 +46,9 @@
   };
   $('setBig').oninput = e => { set('ekmafisi-up', e.target.value); document.documentElement.style.setProperty('--up', e.target.value + 'px'); paint(); };
   $('setSkor').oninput = e => { set('slovar-skorost', e.target.value); paint(); };
-  $('signOut').onclick = () => EK.signOut();
+  /* почта — нажатие: выход после одного вопроса; не вошёл — на её месте «Войти с Google» */
+  $('who').onclick = () => {
+    if (!EK.email) { const b = $('loginBtn'); if (b) b.click(); return; }
+    if (confirm(`Выйти из аккаунта ${EK.email}?`)) EK.signOut();
+  };
 })();
