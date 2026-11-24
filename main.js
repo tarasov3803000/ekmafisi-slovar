@@ -3,8 +3,8 @@
 (() => {
   const $ = id => document.getElementById(id);
   $('app').classList.remove('hidden');
-  /* #<лемма> — статья, #<лемма>/tab — её таблицы спряжения или склонения */
-  const fromHash = () => { const h = decodeURIComponent(location.hash.slice(1)); if (!h) return [null, null]; const m = h.endsWith('/tab'); return [m ? h.slice(0, -4) : h, m ? 'tab' : null]; };
+  /* #<лемма> — статья, #<лемма>/tab — её таблицы спряжения или склонения, #<лемма>/etym — её происхождение */
+  const fromHash = () => { const h = decodeURIComponent(location.hash.slice(1)); if (!h) return [null, null]; const m = h.match(/\/(tab|etym)$/); return m ? [h.slice(0, -m[0].length), m[1]] : [h, null]; };
   const api = Slovar.mount($('slv'), {
     aside: $('setOpen'),
     onPick(l, m) { history.pushState({ d: ((history.state && history.state.d) || 0) + 1 }, '', '#' + encodeURIComponent(l) + (m ? '/' + m : '')); api.show(l, m); },
