@@ -43,9 +43,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .icon { border: 0; background: none; padding: 8px; margin-right: -8px; color: var(--muted); display: inline-flex; border-radius: 10px; flex: none; }  /* шестерёнка — в строке поиска (Slovar.mount, aside) */
 .foot { display: grid; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; font-size: calc(14px + var(--up)); }
 .foot .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
-.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-.seg button { border: 0; background: transparent; padding: 8px 12px; min-height: 40px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+/* настройки (25.11.2026): тема — один значок по кругу авто → светлая → тёмная; скорость и шрифт — ползунками */
+.foot .row { flex-wrap: nowrap; }
+#setTheme { color: var(--accent); }
+.sl { display: flex; align-items: center; gap: 10px; flex: 0 1 60%; min-width: 0; }
+.sl input { flex: 1; min-width: 0; accent-color: var(--accent); height: 32px; margin: 0; }
+.sl output { flex: none; min-width: 4.2em; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
 .link { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
 </style>
 </head>
@@ -67,10 +70,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 <main id="app" class="hidden">
   <button class="icon" id="setOpen" aria-label="Настройки" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
   <section class="foot hidden" id="settings">
-    <div class="row"><span>Тема</span><div class="seg" id="setTheme"><button data-t="auto">авто</button><button data-t="light">светлая</button><button data-t="dark">тёмная</button></div></div>
-    <div class="row"><span>Скорость голоса</span><div class="seg" id="setSkor"><button data-s="0.8">0,8</button><button data-s="0.9">0,9</button><button data-s="1">1</button></div></div>
-    <div class="row"><span>Шрифт</span><div class="seg" id="setBig"><button data-up="0">обычный</button><button data-up="1">+1</button><button data-up="2">+2</button><button data-up="3">+3</button><button data-up="4">+4</button><button data-up="5">+5</button></div></div>
-    <p class="muted" id="zamer"></p>
+    <div class="row"><span>Тема</span><button class="icon" id="setTheme"></button></div>
+    <label class="row"><span>Скорость голоса</span><span class="sl"><input type="range" id="setSkor" min="0.6" max="1.2" step="0.1"><output id="skorV"></output></span></label>
+    <label class="row"><span>Шрифт</span><span class="sl"><input type="range" id="setBig" min="0" max="5" step="1"><output id="bigV"></output></span></label>
     <div class="row"><span class="muted" id="who"></span><button class="link" id="signOut">Выйти</button></div>
   </section>
   <div id="slv"></div>

@@ -17,29 +17,34 @@
   api.show(...fromHash());
   api.ready.then(() => { if (!fromHash()[0]) api.focus(); });
 
-  /* настройки: тема (своя), шрифт (общий с Экмафиси), выход */
+  /* настройки: тема (своя), скорость голоса и шрифт (общие с Экмафиси), выход. Замер открытия — Slovar.zamer, в консоли */
   $('setOpen').onclick = () => { const on = $('settings').classList.toggle('hidden'); $('setOpen').setAttribute('aria-expanded', String(!on)); paint(); };
   const get = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
   const set = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  /* тема — один значок, нажатие — следующая по кругу; значок показывает нынешнюю: авто — полукруг, светлая — солнце, тёмная — луна */
+  const TEMY = ['auto', 'light', 'dark'], TNAME = { auto: 'авто', light: 'светлая', dark: 'тёмная' };
+  const TICON = {
+    auto: '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>',
+    light: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+    dark: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'
+  };
+  const tema = () => { const t = get('slovar-theme'); return TEMY.includes(t) ? t : 'auto'; };
+  const skor = () => { const v = +(get('slovar-skorost') || 0.9); return v >= 0.5 && v <= 1.5 ? v : 0.9; };  /* читает slovar.js при каждом нажатии 🔊 */
   function paint() {
-    const t = get('slovar-theme') || 'auto', up = +(get('ekmafisi-up') || 0);
-    document.querySelectorAll('#setTheme button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t === t)));
-    document.querySelectorAll('#setBig button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.up === up)));
+    const t = tema(), up = +(get('ekmafisi-up') || 0), sk = skor();
+    $('setTheme').innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${TICON[t]}</svg>`;
+    $('setTheme').setAttribute('aria-label', 'Тема: ' + TNAME[t] + '. Сменить');
+    $('setSkor').value = sk; $('skorV').textContent = sk.toLocaleString('ru-RU', { minimumFractionDigits: 1 });
+    $('setBig').value = up; $('bigV').textContent = up ? '+' + up : 'обычный';
     $('who').textContent = EK.email || '';
-    const sk = +(get('slovar-skorost') || 0.9);  /* скорость голоса — читает slovar.js при каждом нажатии 🔊; по умолчанию 0,9 */
-    document.querySelectorAll('#setSkor button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.s === sk)));
-    /* замер открытия (Slovar.zamer, мс от начала страницы): сколько ждали поиска и статей — на этом телефоне */
-    const z = Slovar.zamer, sek = ms => (ms / 1000).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    $('zamer').textContent = z.ready ? `Открытие словаря: поиск — ${sek(z.ready)} с${z.s ? `, статьи — ${sek(z.s)} с` : ''} (из них версия — ${sek(z.ptr)}, указатель — ${sek(z.i - z.ptr)})` : '';
   }
-  document.querySelectorAll('#setTheme button').forEach(b => b.onclick = () => {
-    set('slovar-theme', b.dataset.t);
-    if (b.dataset.t === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.dataset.theme = b.dataset.t;
+  $('setTheme').onclick = () => {
+    const t = TEMY[(TEMY.indexOf(tema()) + 1) % TEMY.length];
+    set('slovar-theme', t);
+    if (t === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.dataset.theme = t;
     paint();
-  });
-  document.querySelectorAll('#setBig button').forEach(b => b.onclick = () => {
-    set('ekmafisi-up', b.dataset.up); document.documentElement.style.setProperty('--up', b.dataset.up + 'px'); paint();
-  });
-  document.querySelectorAll('#setSkor button').forEach(b => b.onclick = () => { set('slovar-skorost', b.dataset.s); paint(); });
+  };
+  $('setBig').oninput = e => { set('ekmafisi-up', e.target.value); document.documentElement.style.setProperty('--up', e.target.value + 'px'); paint(); };
+  $('setSkor').oninput = e => { set('slovar-skorost', e.target.value); paint(); };
   $('signOut').onclick = () => EK.signOut();
 })();
