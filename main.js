@@ -2,10 +2,13 @@
    Адреса: без решётки — поиск; #<лемма> — статья. Системное «назад» — из статьи к списку. */
 (() => {
   const $ = id => document.getElementById(id);
+  /* язык словаря (28.11.2026): EKM_CONFIG.slovarLang — 'el' («Словарь») или 'en' («Dictionary», tools/app.py slovar-site --lang en) */
+  const LANG = window.EKM_CONFIG.slovarLang || 'el', SL = Slovar.yazyk(LANG);
+  const Y = { el: { re: /^el(-|_|$)/i, rod: 'греческий', srv: 'Azure' }, en: { re: /^en(-|_|$)/i, rod: 'английский', srv: 'Google' } }[LANG];
   $('app').classList.remove('hidden');
   /* #<лемма> — статья, #<лемма>/tab — её таблицы спряжения или склонения, #<лемма>/etym — её происхождение */
   const fromHash = () => { const h = decodeURIComponent(location.hash.slice(1)); if (!h) return [null, null]; const m = h.match(/\/(tab|etym|hist)$/); return m ? [h.slice(0, -m[0].length), m[1]] : [h, null]; };
-  const api = Slovar.mount($('slv'), {
+  const api = SL.mount($('slv'), {
     aside: $('setOpen'),
     dve: true,  /* от 1000 px — две панели: список слева, статья справа (27.11.2026) */
     onPick(l, m) { history.pushState({ d: ((history.state && history.state.d) || 0) + 1 }, '', '#' + encodeURIComponent(l) + (m ? '/' + m : '')); api.show(l, m); },
@@ -39,7 +42,7 @@
     $('setBig').value = up; $('bigV').textContent = 'Шрифт: ' + (up ? '+' + up : 'обычный');
     const g = get('ekmafisi-golos') === 'tel' ? 'tel' : 'azure';
     document.querySelectorAll('#setGolos button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.g === g)));
-    $('slvN').textContent = Slovar.opisanie(); $('slvN').classList.toggle('hidden', !$('slvN').textContent);
+    $('slvN').textContent = SL.opisanie(); $('slvN').classList.toggle('hidden', !$('slvN').textContent);
     $('who').textContent = EK.email || 'Войти с Google'; $('who').classList.toggle('vhod', !EK.email);
   }
   $('setTheme').onclick = () => {
@@ -51,8 +54,8 @@
   /* голос озвучки: на этом устройстве (голоса у телефона и компьютера разные); slovar.js читает ключ при каждом 🔊 */
   document.querySelectorAll('#setGolos button').forEach(b => b.onclick = () => {
     set('ekmafisi-golos', b.dataset.g);
-    if (b.dataset.g === 'tel' && !(window.speechSynthesis && speechSynthesis.getVoices().some(v => /^el(-|_|$)/i.test(v.lang))))
-      alert('На этом устройстве не найден греческий голос — останется Azure. Голос ставится в настройках телефона: «Синтез речи» → Google → языки.');
+    if (b.dataset.g === 'tel' && !(window.speechSynthesis && speechSynthesis.getVoices().some(v => Y.re.test(v.lang))))
+      alert(`На этом устройстве не найден ${Y.rod} голос — останется ${Y.srv}. Голос ставится в настройках телефона: «Синтез речи» → Google → языки.`);
     paint();
   });
   $('setSkor').oninput = e => { set('slovar-skorost', e.target.value); paint(); };
